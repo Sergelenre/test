@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, height=device-height, initial-scale=1.0"
+    />
+    <title>주소 찾기</title>
+    <script src="https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js"></script>
+    <script>
+      function postMessageToiOS(postData) {
+        window.webkit.messageHandlers.callBackHandler.postMessage(postData)
+      }
+
+      function execDaumPostcode() {
+        new daum.Postcode({
+          oncomplete: function (data) {
+            var jibunAddress = data.jibunAddress || data.autoJibunAddress
+            var postData = {
+              roadAddress: data.roadAddress,
+              jibunAddress: jibunAddress,
+              zonecode: data.zonecode,
+            }
+            postMessageToiOS(postData)
+          },
+        }).embed(document.getElementById('layer'))
+      }
+    </script>
+  </head>
+  <body onload="execDaumPostcode()">
+    <div id="layer" style="width: 100%; height: 100%"></div>
+  </body>
+</html>
